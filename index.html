@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Tax Calculator</title>
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="bg-light p-4">
+    <div class="container mt-5">
+        <div class="row justify-content-center">
+            <div class="col-md-6 bg-white p-4 rounded-lg shadow-lg">
+                <form id="taxForm">
+                    <div class="form-group">
+                        <label for="annualIncome">Enter gross annual income</label>
+                        <input type="number" id="annualIncome" class="form-control" placeholder="Enter gross annual income">
+                    </div>
+                    <div class="form-group">
+                        <label for="extraIncome">Enter extra income</label>
+                        <input type="number" id="extraIncome" class="form-control" placeholder="Enter extra income from other sources">
+                    </div>
+                    <div class="form-group">
+                        <label for="ageGroup">Enter age group</label>
+                        <select id="ageGroup" class="form-control">
+                            <option value="">Select age group</option>
+                            <option value="<40">&lt; 40</option>
+                            <option value=">=40 & <60">≥ 40 &lt; 60</option>
+                            <option value=">=60">≥ 60</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="deductions">Enter total applicable deductions</label>
+                        <input type="number" id="deductions" class="form-control" placeholder="Add total applicable deductions">
+                    </div>
+                    <div class="form-group">
+                        <button type="submit" class="btn btn-primary btn-block">
+                            Submit
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div id="modal" class="modal fade">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modalTitle">Tax Calculation Result</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <p id="modalContent"></p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+    <script>
+        const taxForm = document.getElementById('taxForm');
+        const modal = document.getElementById('modal');
+        const modalContent = document.getElementById('modalContent');
+
+        taxForm.addEventListener('submit', function(event) {
+            event.preventDefault();
+            const annualIncome = parseFloat(document.getElementById('annualIncome').value) || 0;
+            const extraIncome = parseFloat(document.getElementById('extraIncome').value) || 0;
+            const deductions = parseFloat(document.getElementById('deductions').value) || 0;
+            const ageGroup = document.getElementById('ageGroup').value;
+
+            const totalIncome = annualIncome + extraIncome - deductions;
+            let taxRate = 0;
+            if (ageGroup === '<40') taxRate = 0.3;
+            if (ageGroup === '>=40 & <60') taxRate = 0.4;
+            if (ageGroup === '>=60') taxRate = 0.1;
+
+            let tax = 0;
+            if (totalIncome > 800000) {
+                tax = taxRate * (totalIncome - 800000);
+            }
+
+            modalContent.textContent = 'Your total tax is: ₹' + tax.toLocaleString();
+            $('#modal').modal('show');
+        });
+    </script>
+</body>
+</html>
